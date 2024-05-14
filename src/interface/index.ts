@@ -85,12 +85,13 @@ interface IAuthUserData {
    */
   interface IRecipeFormData {
 	recipeName: string;
-	mealType?: string;
-	prepTime?: number;
+	mealType: string;
+	prepTime: number;
 	cookingTime: number;
 	instructions: InstructionItems[];
 	ingredientList: IngredientItems[];
-	recipeImage?: string;
+	recipeImage: string;
+	userId: string;
   }
   
   interface IUpdateRecipeData extends IRecipeFormData {
@@ -130,7 +131,7 @@ interface IAuthUserData {
    */
   interface IngredientItems {
 	amount: string;
-	measurement?: string;
+	measurement: string;
 	ingredient: string;
   }
   
@@ -138,7 +139,7 @@ interface IAuthUserData {
    * A single item of each instruction
    */
   interface InstructionItems {
-	instruction?: string;
+	instruction: string;
   }
   
   /**
