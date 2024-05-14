@@ -80,9 +80,7 @@ function MobileNavBar({
 }
 
 export default function NavBar() {
-  const { isSignedIn, user, isLoaded } = useUser();
-
-  console.log(isSignedIn, user, isLoaded, "<=== nav checking clerk");
+  const { user } = useUser();
 
   const navItemsDisplayed = user !== null ? navItemsAuth : navItems;
 
