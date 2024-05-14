@@ -66,18 +66,15 @@ model User {
     imageUrl            String?
     role                Role                 @default(CLIENT)
     createdAt           DateTime             @default(now())
-    UsersRecipes        UserFavoriteRecipe[]
     UserEmailPreference UserEmailPreference?
 }
 
 model UserFavoriteRecipe {
     userId   String
     recipeId String
-    user     User   @relation(fields: [userId], references: [id])
     recipe   Recipe @relation(fields: [recipeId], references: [id])
 
     @@id([userId, recipeId])
-    @@index([userId])
     @@index([recipeId])
 }
 
