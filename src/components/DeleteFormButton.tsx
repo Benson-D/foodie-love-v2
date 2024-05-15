@@ -22,6 +22,7 @@ export default function DeleteFormButton({ index, removeItemCb }: IFormFieldProp
       onClick={() => removeItemCb(index)}
       sx={{
         minWidth: "40px",
+        height: "2.5rem",
         mt: 1,
         padding: 0,
         "&:hover": {

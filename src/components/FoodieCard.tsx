@@ -8,6 +8,9 @@ import {
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import useToggle from "~/hooks/useToggle";
 
+import { api } from "~/utils/api";
+import { useUser } from '@clerk/nextjs';
+
 /**
  * Individual list card that displays a recipe
  *
@@ -32,6 +35,23 @@ function FoodieCard({
 }) {
 
   const [value, toggleValue] = useToggle(cardData.isLiked);
+  const { mutate: mutateAddFavorite } = api.recipe.addFavorite.useMutation();
+  const { mutate: mutateRemoveFavorite } = api.recipe.removeFavorite.useMutation();
+
+  const { user } = useUser();
+
+  const handleCardButtonEvent = (
+    evt: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    evt.preventDefault();
+
+    if (value) {
+      mutateRemoveFavorite({ userId: user?.id ?? '000', recipeId: cardData.id });
+    } else {
+      mutateAddFavorite({ userId: user?.id ?? '000', recipeId: cardData.id });
+    }
+
+    toggleValue(!value);
+  }
 
   return (
     <Card
@@ -53,7 +73,7 @@ function FoodieCard({
         title={cardData?.title}
         subheader={cardData?.subheader ?? "N/A"}
         action={
-          <IconButton>
+          <IconButton onClick={(evt) => handleCardButtonEvent(evt)}>
             <FavoriteIcon sx={{ color: `${value ? "#ee5050" : "inherit"}` }} />
           </IconButton>
         }
@@ -61,7 +81,7 @@ function FoodieCard({
       <CardMedia
         component="img"
         height="194"
-        image={cardData.image ?? "/img/default-image.jpg"}
+        image={!cardData.image ? "/img/default-image.jpg" : cardData.image}
         alt="main-recipe-image"
       />
       <CardContent>{children}</CardContent>
