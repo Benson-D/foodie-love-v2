@@ -23,7 +23,8 @@ export const recipeRouter = createTRPCRouter({
 		searchFilters: z.object({
 			recipeName: z.string()
 		}),
-		skip: z.number()
+		skip: z.number(),
+		userId: z.string() 
 	}))
 	.query(({input, ctx}) => {
 		const { skip, searchFilters } = input;
@@ -41,7 +42,15 @@ export const recipeRouter = createTRPCRouter({
 				cookingTime: true,
 				prepTime: true, 
 				recipeImage: true,
-				mealType: true
+				mealType: true,        
+				user: {
+					select: {
+					  userId: true,
+					},
+					where: {
+					  userId: input.userId,
+					}
+				},
 			},
 			orderBy: {
 				id: "asc"
