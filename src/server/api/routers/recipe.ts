@@ -184,6 +184,106 @@ export const recipeRouter = createTRPCRouter({
 			'recipeIngredients': recipeIngredients.length
 		  }
 	}),
+	updateRecipe:publicProcedure
+	.input(z.object({
+		recipeId: z.string(),
+		recipeName: z.string(),
+		mealType: z.string(),
+		prepTime: z.number(),
+		cookingTime: z.number(),
+		recipeImage: z.string(),
+		ingredientList: z.array(z.object({
+			amount: z.string(),
+			measurement: z.string(),
+			ingredient: z.string()
+		})),
+		instructions: z.array(z.object({
+			instruction: z.string()
+		})),
+	}))
+	.mutation(async({input, ctx}) => {
+		const foundRecipe = await ctx.db.recipe.findUnique({
+			where: { id: input.recipeId }
+		});
+
+		if (!foundRecipe) throw new TRPCError({ code: "NOT_FOUND" });
+
+		const updatedRecipe = await ctx.db.recipe.update({
+			where: {
+			  id: input.recipeId,
+			},
+			data: {
+			  name: input.recipeName,
+			  prepTime: input.prepTime ?? null,
+			  cookingTime: input.cookingTime,
+			  recipeImage: input.recipeImage ?? null,
+			  mealType: input.mealType ?? null,
+			  instructions: input.instructions,
+			},
+		  });
+
+		const foundRecipeIngredients = await ctx.db.recipeIngredient.findMany({
+			where: {
+				recipeId: input.recipeId
+			},
+		});
+
+		foundRecipeIngredients.map(async(recipeData) => {
+			await ctx.db.recipeIngredient.delete({
+				where: {
+				  recipeId_ingredientId: {
+					recipeId: recipeData.recipeId,
+					ingredientId: recipeData.ingredientId,
+				  },
+				},
+			  });
+		})
+
+		const recipeIngredients = await Promise.all(input.ingredientList.map(async(list: { 
+			amount: string;
+            measurement: string;
+            ingredient: string;}) => {
+				// Search for existing measurement
+				let foundMeasurement = await ctx.db.measurementUnit.findFirst({
+					where: { description: list?.measurement}
+				});
+
+				if (!foundMeasurement) {
+					foundMeasurement = await ctx.db.measurementUnit.create({
+						data: { description: list?.measurement }
+					});
+				}
+
+				// Search for existing ingredient
+				let foundIngredient = await ctx.db.ingredient.findFirst({
+					where: { name: list?.ingredient }
+				});
+
+				if (!foundIngredient) {
+					foundIngredient = await ctx.db.ingredient.create({
+						data: { name: list.ingredient }
+					});
+				}
+
+				// Create recipe ingredient 
+				const createdRecipeIngredient = await ctx.db.recipeIngredient.create({
+					data: {
+					  recipeId: input.recipeId,
+					  ingredientId: foundIngredient.id,
+					  measurementUnitId: foundMeasurement.id ?? null,
+					  amount: parseRecipeIngredientAmount(list.amount)
+					},
+				  });
+			  
+				return createdRecipeIngredient;
+			}));
+
+		return {
+			'recipeId': updatedRecipe,
+			'recipeIngredients': recipeIngredients.length
+		}
+
+	}),
 	addFavorite: publicProcedure
 	.input(z.object({ 
 		userId: z.string(), 
@@ -194,7 +294,7 @@ export const recipeRouter = createTRPCRouter({
 			where: { id: input.recipeId }
 		});
 
-		if (!foundRecipe) throw new TRPCError({ code: "NOT_FOUND" })
+		if (!foundRecipe) throw new TRPCError({ code: "NOT_FOUND" });
 
 		const addFavorite = await ctx.db.userFavoriteRecipe.create({
 			data: {
