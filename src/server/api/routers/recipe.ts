@@ -19,6 +19,20 @@ function parseRecipeIngredientAmount(amount: string): number {
 
 export const recipeRouter = createTRPCRouter({
 	getAll: publicProcedure
+	.query(({ ctx }) => {
+		const recipes =  ctx.db.recipe.findMany({
+			select: {
+				id: true,
+				name: true       
+			},
+			orderBy: {
+				id: "asc"
+			}
+		});
+
+		return recipes;
+	}),
+	getFilteredRecipes: publicProcedure
 	.input(z.object({
 		searchFilters: z.object({
 			recipeName: z.string()
@@ -62,10 +76,12 @@ export const recipeRouter = createTRPCRouter({
 		return recipes;
 	}),
 	getById: publicProcedure
-	.input(String)
+	.input(z.object({
+		id: z.string()
+	}))
 	.query(({ input, ctx }) => {
 		const foundRecipe = ctx.db.recipe.findUnique({
-			where: { id: input },
+			where: { id: input.id },
 			include: {
 			  ingredients: {
 				select: {

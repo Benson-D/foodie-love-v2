@@ -11,17 +11,20 @@ import SearchBar from "~/components/SearchBar";
 import MainModal from "~/components/MainModal";
 import CreateRecipeForm from "~/features/recipeForm/CreateForm";
 
+import { useUser } from "@clerk/nextjs";
 
 export default function Recipes() {
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [skip, setSkip] = useState<number>(0);
 	const debounceValue = useDebounce(searchTerm);
+	const { user } = useUser();
 	
-	const { data: recipes } = api.recipe.getAll.useQuery({ 
+	const { data: recipes } = api.recipe.getFilteredRecipes.useQuery({ 
 		searchFilters: {
 			recipeName: debounceValue
 		},
-		skip 
+		skip,
+		userId: user?.id ?? '000' 
 	}); 
 
 	/** Handles search event handler, updates state */
@@ -80,7 +83,7 @@ export default function Recipes() {
 										title: recipe.name,
 										subheader: recipe.mealType ?? "other",
 										image: recipe.recipeImage,
-										isLiked: false,
+										isLiked: recipe.user.length > 0,
 										}}
 									>
 										<>
