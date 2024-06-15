@@ -1,3 +1,6 @@
+import { type JsonArray } from "@prisma/client/runtime/library";
+
+
 /**
  * The data of an authorized user, including token
  */
@@ -43,13 +46,13 @@ interface IAuthUserData {
   interface ISingleRecipe {
 	id: string;
 	name: string;
-	createdAt: string;
+	createdAt: Date | string;
 	createdBy: string;
-	prepTime: string | null;
-	cookingTime: string;
+	prepTime: number | null;
+	cookingTime: number;
 	recipeImage: string | null;
 	mealType: string | null;
-	instructions: { instruction: string }[];
+	instructions: InstructionItems[] | JsonArray;
 	ingredients: ISingleIngredientList[];
   }
   
@@ -58,7 +61,7 @@ interface IAuthUserData {
    * retrieved from a get request
    */
   interface ISingleIngredientList {
-	amount: string;
+	amount: number;
 	ingredientId: string;
 	ingredient: {
 	  name: string;
