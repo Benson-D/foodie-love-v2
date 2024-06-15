@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { type IRecipeFormData } from "~/interface";
+import { type IRecipeFormData, type IngredientItems } from "~/interface";
 
 import { Box, Button, MobileStepper } from "@mui/material";
 import FormLayout from "./layout/FormLayout";
@@ -15,6 +15,16 @@ import FormContext from "./context/FormContext";
 import FormValidationSchema from "./schema/FormValidationSchema";
 
 import useStep from "../../hooks/useStep";
+import { api } from "~/utils/api";
+
+import { useUser } from '@clerk/nextjs';
+
+// Ensure each object in the array is an instance of IngredientItems
+const ingredientList: IngredientItems[] = Array.from({ length: 5 }, () => ({
+  amount: "",
+  measurement: "",
+  ingredient: ""
+}));
 
 //Initial Values of Foodie Form
 const initialValues: IRecipeFormData = {
@@ -22,13 +32,10 @@ const initialValues: IRecipeFormData = {
   mealType: "",
   prepTime: 0,
   cookingTime: 0,
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  ingredientList: Array(5).fill({
-    amount: "",
-    measurement: "",
-    ingredient: "",
-  }),
+  recipeImage: "",
+  ingredientList: ingredientList,
   instructions: [{ instruction: "" }],
+  userId: ""
 };
 
 /**
@@ -45,6 +52,9 @@ function CreateRecipeForm({
 }) {
   const [formImage, setFormImage] = useState<string | File>("");
   const [step, helpers] = useStep(4);
+  const { user } = useUser();
+
+  const { mutate } = api.recipe.createRecipe.useMutation();
 
   const { canGoToPreviousStep, canGoToNextStep, previousStep, nextStep } =
     helpers;
@@ -67,11 +77,15 @@ function CreateRecipeForm({
 //   }
 
   async function handleSubmission(recipeForm: IRecipeFormData) {
-	console.log(recipeForm, "recipe form");
     // const recipeImage = await uploadRecipeImageToS3();
 
     // if (recipeImage) recipeForm["recipeImage"] = recipeImage;
-    // createRecipe(recipeForm);
+
+    if (user?.id) {
+      recipeForm.userId = user.id;
+    }
+
+    mutate(recipeForm);
 
     if (toggleValue) {
       toggleValue(false);
@@ -90,8 +104,6 @@ function CreateRecipeForm({
       actions.setSubmitting(false);
     }
   }
-
-  console.log(FormValidationSchema);
 
   return (
     <FormLayout title="Create a Recipe">
