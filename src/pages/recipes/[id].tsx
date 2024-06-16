@@ -1,7 +1,8 @@
-import type { GetStaticPaths, GetStaticProps } from "next";
-import  { useRouter } from 'next/router'
+import type { GetStaticProps } from "next";
 import Head from "next/head";
 import Link from 'next/link';
+import { generateSSGHelper } from "~/server/api/helpers/ssgHelper";
+import { useRouter } from 'next/router'
 
 import { api } from "~/utils/api";
 
@@ -23,9 +24,8 @@ import MainModal from '~/components/MainModal';
 import EditRecipeForm from '~/features/recipeForm/EditRecipeForm';
 import { type ISingleRecipe, type IUpdateRecipeData, type InstructionItems } from "~/interface";
 
-
 const convertTimeToFormattedString = (
-foodieTime: number | null | undefined,
+	foodieTime: number | null | undefined,
 ): string => {
 	if (!foodieTime) return "0 minutes";
 	const minuteStatement = Number(foodieTime) > 1 ? "minutes" : "minute";
@@ -191,29 +191,27 @@ function SinglePageRecipe() {
 	);
 }
 
-// export const getStaticPaths: GetStaticPaths = async () => {
-// 	const { data: recipes } = api.recipe.getAll.useQuery();
+export const getStaticProps: GetStaticProps = async (context) => {
+	const ssg = generateSSGHelper();
 
-// 	const paths = (recipes && recipes.length > 0) 
-// 	? recipes.map((recipe: { id: string; }) => ({params: { id: recipe.id }})) 
-// 	: [];
+	const { id } = context.params as { id: string };
+
+	if (typeof id !== "string") throw new Error("no id");
+
+	await ssg.recipe.getById.prefetch({ id });
+
+	return {
+		props: {
+		  trpcState: ssg.dehydrate(),
+		  id,
+		},
+	};
+}
+
+
+export const getStaticPaths = () => {
+	return { paths: [], fallback: "blocking" };
+};
   
-// 	return {
-// 	  paths,
-// 	  fallback: 'blocking', // or 'true' / 'false'
-// 	};
-// };
-  
-// export const getStaticProps: GetStaticProps = async (context) => {
-// 	const { id } = context.params as { id: string };
-
-// 	return {
-// 		props: {
-// 		id,
-// 		},
-// 		revalidate: 10, // Re-generate the page at most once every 10 seconds
-// 	};
-// };
-
 
 export default SinglePageRecipe;
