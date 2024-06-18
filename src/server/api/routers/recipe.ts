@@ -19,8 +19,8 @@ function parseRecipeIngredientAmount(amount: string): number {
 
 export const recipeRouter = createTRPCRouter({
 	getAll: publicProcedure
-	.query(({ ctx }) => {
-		const recipes =  ctx.db.recipe.findMany({
+	.query(async ({ ctx }) => {
+		const recipes = await ctx.db.recipe.findMany({
 			select: {
 				id: true,
 				name: true       
@@ -79,8 +79,8 @@ export const recipeRouter = createTRPCRouter({
 	.input(z.object({
 		id: z.string()
 	}))
-	.query(({ input, ctx }) => {
-		const foundRecipe = ctx.db.recipe.findUnique({
+	.query(async ({ input, ctx }) => {
+		const foundRecipe = await ctx.db.recipe.findUnique({
 			where: { id: input.id },
 			include: {
 			  ingredients: {
@@ -300,6 +300,17 @@ export const recipeRouter = createTRPCRouter({
 		}
 
 	}),
+	// uploadRecipeImage: publicProcedure
+	// .mutation(async(req) => {
+	// 	//const image = req.file || "";
+	// 	let urlResponse = "";
+	
+	// 	// if (image) {
+	// 	//   urlResponse = await uploadImageToS3(image);
+	// 	// }
+
+	// 	return urlResponse;
+	// }),
 	addFavorite: publicProcedure
 	.input(z.object({ 
 		userId: z.string(), 
