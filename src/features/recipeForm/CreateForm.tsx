@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { type IRecipeFormData, type IngredientItems } from "~/interface";
 
 import { Box, Button, MobileStepper } from "@mui/material";
@@ -40,52 +40,40 @@ const initialValues: IRecipeFormData = {
 
 /**
  * Renders a multi step form to add a new Recipe
- *
- * Props: none
- * State:
- *   formImage: File | string
  */
 function CreateRecipeForm({
   toggleValue,
 }: {
   toggleValue?: (value?: boolean) => void;
 }) {
-  const [formImage, setFormImage] = useState<string | File>("");
+  const [formImages, setFormImages] = useState<Array<string>>([]);
   const [step, helpers] = useStep(4);
   const { user } = useUser();
 
-  const { mutate } = api.recipe.createRecipe.useMutation();
+  const { mutate: createRecipe } = api.recipe.createRecipe.useMutation();
 
-  const { canGoToPreviousStep, canGoToNextStep, previousStep, nextStep } =
-    helpers;
+  const { canGoToPreviousStep, canGoToNextStep, previousStep, nextStep } = helpers;
 
   /**
    * Sets Image state for recipeImage
    * @param evt
    */
-  function handleFile(evt: React.ChangeEvent<HTMLInputElement>): void {
-    const image = evt.target.files?.[0];
-    if (image) setFormImage(image);
+  function handleFile(file: string | null): void {
+    if (typeof file === "string") {
+      setFormImages((currentImages) => [...currentImages, file]);
+    }
   }
 
-//   async function uploadRecipeImageToS3(): Promise<string> {
-//     const sendData: FormData = new FormData();
-//     sendData.append("recipeImage", formImage);
-
-//     const recipeImage = await createS3Image(sendData).unwrap();
-//     return recipeImage.url;
-//   }
-
   async function handleSubmission(recipeForm: IRecipeFormData) {
-    // const recipeImage = await uploadRecipeImageToS3();
-
-    // if (recipeImage) recipeForm["recipeImage"] = recipeImage;
+    if (formImages.length > 0) {
+      recipeForm.recipeImage = formImages.join(',');
+    }
 
     if (user?.id) {
       recipeForm.userId = user.id;
     }
 
-    mutate(recipeForm);
+    createRecipe(recipeForm);
 
     if (toggleValue) {
       toggleValue(false);

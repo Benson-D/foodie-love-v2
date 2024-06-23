@@ -1,14 +1,9 @@
+import { UploadButton } from "~/utils/uploadthing";
+
 import { useContext } from "react";
 import FormContext from "../context/FormContext";
 import InputField from "~/components/formFields/InputField";
-import {
-  Box,
-  Grid,
-  Typography,
-  TextField,
-  InputAdornment,
-  InputLabel,
-} from "@mui/material";
+import { Box, Grid, Typography, InputAdornment } from "@mui/material";
 
 /**
  * First page of Foodie Recipe Form
@@ -21,7 +16,7 @@ import {
 export default function GeneralInfoField({
   handleFile,
 }: {
-  handleFile: (evt: React.ChangeEvent<HTMLInputElement>) => void;
+  handleFile: (file: string | null) => void;
 }) {
   const foodie = useContext(FormContext);
 
@@ -59,12 +54,20 @@ export default function GeneralInfoField({
           />
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
-          <InputLabel>Recipe Image</InputLabel>
-          <TextField
-            name="recipeImage"
-            fullWidth
-            type="file"
-            onChange={handleFile}
+          <UploadButton
+            className="custom-upload"
+            endpoint="imageUploader"
+            onClientUploadComplete={(res) => {
+              if (res[0] && typeof res[0].url === "string") {
+                handleFile(res[0].url);
+              }
+
+              alert("Upload Completed");
+            }}
+            onUploadError={(error: Error) => {
+              // Do something with the error.
+              alert(`ERROR! ${error.message}`);
+            }}
           />
         </Grid>
       </Grid>
