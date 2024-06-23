@@ -1,6 +1,6 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { z } from 'zod';
+import { z } from "zod";
 import RecipeController from "../controllers/RecipeController";
 
 function parseRecipeIngredientAmount(amount: string): number {
@@ -300,17 +300,23 @@ export const recipeRouter = createTRPCRouter({
 		}
 
 	}),
-	// uploadRecipeImage: publicProcedure
-	// .mutation(async(req) => {
-	// 	//const image = req.file || "";
-	// 	let urlResponse = "";
+	uploadRecipeImage: publicProcedure
+	.input(z.any())
+	.mutation(async(req) => {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		const urlResponse = req;
+		
+		console.log(urlResponse, "<==== req for file upload");
+		// const image = req.file || "";
+		// let urlResponse = "";
 	
-	// 	// if (image) {
-	// 	//   urlResponse = await uploadImageToS3(image);
-	// 	// }
+		// if (image) {
+		//   urlResponse = await uploadImageToS3(image);
+		// }
 
-	// 	return urlResponse;
-	// }),
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+		return urlResponse;
+	}),
 	addFavorite: publicProcedure
 	.input(z.object({ 
 		userId: z.string(), 
