@@ -14,3 +14,8 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.custom-upload > *[data-ut-element="button"] {
+  background-color: #04b597;
+  width: 100%;
+}

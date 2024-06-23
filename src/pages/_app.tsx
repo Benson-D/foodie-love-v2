@@ -8,12 +8,11 @@ import { ThemeProvider } from '@mui/material/styles';
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
+import "@uploadthing/react/styles.css";
 import { CssBaseline } from "@mui/material";
 import theme from "~/styles/theme";
 
 import NavBar from "~/features/navBar/NavBar";
-
-//import createEmotionCache from "~/config/createEmotionCache";
 
 const MyApp: AppType = (props: AppProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
