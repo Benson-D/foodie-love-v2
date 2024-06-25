@@ -45,10 +45,10 @@ function MobileNavBar({
 
   return (
     <>
-      <StorefrontIcon sx={{ display: { xs: "flex", sm: "none" }, mr: 1 }} />
+      <StorefrontIcon sx={{ display: { xs: "flex", sm: "none" }, mr: 1, ml: "12%" }} />
       <Link href="/">
         <Typography
-          variant="h5"
+          variant="h6"
           noWrap
           sx={{
           display: { xs: "flex", sm: "none" },
@@ -58,7 +58,6 @@ function MobileNavBar({
           color: "inherit",
           letterSpacing: ".15rem",
           textDecoration: "none",
-          textAlign: "center",
           }}
         >
           Foodie Love
@@ -120,7 +119,7 @@ export default function NavBar() {
           </Link>))}
       </Box>
           {user && (
-            <Box sx={{ display: "flex", flexGrow: { xs: 1, sm: 0 } }}>
+            <Box sx={{ display: "flex", ml: "12px" }}>
               <UserButton/>
             </Box>
           )}
