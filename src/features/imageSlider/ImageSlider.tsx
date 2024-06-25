@@ -16,18 +16,16 @@ const sliderImage = [
 const ImageLayout = styled(Box)(({ theme }) => ({
   position: "relative",
   overflow: "hidden",
-  maxWidth: 340,
-  marginTop: "2rem",
+  marginTop: "3.25rem",
+  maxWidth: "92%",
   height: 300,
   [theme.breakpoints.up("sm")]: {
-    maxWidth: 450,
-    height: 300,
-    marginTop: "7rem",
+    maxWidth: 525,
+    height: 400
   },
   [theme.breakpoints.up("md")]: {
-    maxWidth: 550,
-    height: 400,
-    marginTop: "4rem",
+    maxWidth: 650,
+    height: 500,
   },
 }));
 
@@ -44,9 +42,9 @@ function ImageSlider() {
 
   return (
     <ImageLayout>
-      <div
-        style={{
-          height: "300px",
+      <Box
+        sx={{
+          height: "100%",
           width: "100%",
           whiteSpace: "nowrap",
           transform: `translate3d(${-image * 100}%, 0, 0)`,
@@ -54,9 +52,9 @@ function ImageSlider() {
         }}
       >
         {items.map((item, idx) => (
-          <div
+          <Box
             key={idx}
-            style={{
+            sx={{
               display: "inline-block",
               backgroundImage: `url(${item.url})`,
               backgroundSize: "cover",
@@ -65,9 +63,9 @@ function ImageSlider() {
               height: "100%",
               width: "100%",
             }}
-          ></div>
+          ></Box>
         ))}
-      </div>
+      </Box>
       <Arrow direction="left" handleClick={prevSwitchStep} />
       <Arrow direction="right" handleClick={nextSwitchStep} />
     </ImageLayout>
