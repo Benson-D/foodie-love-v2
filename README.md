@@ -1,7 +1,7 @@
 # Foodie Love
 
 Foodie Love is a fullstack recipe web application. A user can create, and view recipe/grocery list.  
-The stack consist of Next.js, React, TypeScript, MUI, TRPC, Prisma, and Clerk.
+The stack consist of Next.js, React, TypeScript, MUI, TRPC, Prisma, Supabase, and Clerk.
 
 ## Installation/Scripts
 
