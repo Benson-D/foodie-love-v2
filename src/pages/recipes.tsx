@@ -52,7 +52,7 @@ export default function Recipes() {
 					alignItems: "center",
 					justifyContent: "space-between",
 					flexDirection: { xs: "column-reverse", sm: "row" },
-					px: 5,
+					px: 3,
 					py: 2
 				}}
 			>
@@ -72,7 +72,7 @@ export default function Recipes() {
 				sx={{ height: "calc(100vh - 100px)", overflowY: "auto" }}
 				onScroll={handleScroll}
 			>
-				<Grid container spacing={2} sx={{ padding: 5 }}>
+				<Grid container spacing={2} sx={{ padding: 3 }}>
 					{recipes?.map((recipe, idx) => (
 						 <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={idx}>
 							<Link
