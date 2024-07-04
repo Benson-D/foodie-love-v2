@@ -37,7 +37,7 @@ const navItemsAuth = [
 ];
 
 function MobileNavBar({
-  navItems,
+  navItems
 }: {
   navItems: { title: string; link: string; icon: JSX.Element }[];
 }) {
@@ -45,29 +45,29 @@ function MobileNavBar({
 
   return (
     <>
-      <StorefrontIcon sx={{ display: { xs: "flex", sm: "none" }, mr: 1, ml: "12%" }} />
-      <Link href="/">
-        <Typography
-          variant="h6"
-          noWrap
-          sx={{
-          display: { xs: "flex", sm: "none" },
-          flexGrow: 1,
-          fontFamily: "monospace",
-          fontWeight: 700,
-          color: "inherit",
-          letterSpacing: ".15rem",
-          textDecoration: "none",
-          }}
-        >
-          Foodie Love
-        </Typography>
-      </Link>
+      <Box sx={{ display: { xs: "flex", sm: "none", flexGrow: 1 }, alignItems: "center" }}>
+        <StorefrontIcon sx={{  mr: 1 }} />
+        <Link href="/">
+          <Typography
+            variant="h6"
+            noWrap
+            sx={{
+            fontFamily: "monospace",
+            fontWeight: 700,
+            color: "inherit",
+            letterSpacing: ".15rem",
+            textDecoration: "none",
+            }}
+          >
+            Foodie Love
+          </Typography>
+        </Link>
+      </Box>
       <IconButton
         color="inherit"
         aria-label="open drawer"
         onClick={() => toggleValue()}
-        sx={{ display: { sm: "none" }, ml: "auto" }}
+        sx={{ display: { sm: "none" }}}
       >
         <MenuIcon />
       </IconButton>
@@ -85,46 +85,53 @@ export default function NavBar() {
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#04b597" }}>
-      <Container maxWidth={false}>
-        <Toolbar disableGutters>
-          <StorefrontIcon sx={{ display: { xs: "none", sm: "flex" }, mr: 1 }} />
-		  <Link href="/">
-        <Typography
-          variant="h6"
-          noWrap
-          sx={{
-          display: { xs: "none", sm: "flex" },
-          fontFamily: "monospace",
-          fontWeight: 700,
-          color: "inherit",
-          letterSpacing: ".15rem",
-          textDecoration: "none",
-          }}
-        >
-				  Foodie Love
-			  </Typography>
-		  </Link>
-      <Box
-          sx={{
-            flexGrow: 1,
-            justifyContent: "end",
-            display: { xs: "none", sm: "flex" },
-          }}
-        >
-          {navItemsDisplayed.map((item, idx) => (
-          <Link key={idx} href={item.link}>
-            <Button sx={{ color: "#fff", ml: 1 }}>
-              {item.title}
-            </Button>
-          </Link>))}
-      </Box>
-          {user && (
-            <Box sx={{ display: "flex", ml: "12px" }}>
-              <UserButton/>
+        <Container maxWidth={false}>
+          <Toolbar disableGutters>
+            <StorefrontIcon sx={{ display: { xs: "none", sm: "flex" }, mr: 1 }} />
+            <Link href="/">
+              <Typography
+                variant="h6"
+                noWrap
+                sx={{
+                display: { xs: "none", sm: "flex" },
+                fontFamily: "monospace",
+                fontWeight: 700,
+                color: "inherit",
+                letterSpacing: ".15rem",
+                textDecoration: "none",
+                }}
+              >
+                Foodie Love
+              </Typography>
+            </Link>
+            <Box sx={{
+              flexGrow: 1,
+              justifyContent: "end",
+              display: { xs: "none", sm: "flex" },
+              }}
+              >
+                {navItemsDisplayed.map((item, idx) => (
+                <Link key={idx} href={item.link}>
+                  <Button sx={{ color: "#fff", ml: 1 }}>
+                    {item.title}
+                  </Button>
+                </Link>))}
             </Box>
-          )}
-          <MobileNavBar navItems={navItemsDisplayed} />
-        </Toolbar>
+            <Box sx={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "space-between", 
+              width: { xs: "100%",  sm: "auto"}, 
+              mx: "12px"
+              }}>
+              {user && (
+                <Box sx={{ flexGrow: 1 }}>
+                  <UserButton/>
+                </Box>
+              )}
+              <MobileNavBar navItems={navItemsDisplayed} />
+            </Box>
+          </Toolbar>
       </Container>
     </AppBar>
   );
