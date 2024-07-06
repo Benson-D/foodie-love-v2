@@ -1,4 +1,4 @@
-import { Grid, Typography, Button } from "@mui/material";
+import { Grid, Typography, Button, Box } from "@mui/material";
 import { useContext } from "react";
 import FormContext from "../context/FormContext";
 import { FieldArray } from "formik";
@@ -34,7 +34,7 @@ function InstructionsField({ values }: { values: InstructionItems[] }) {
   const foodie = useContext(FormContext);
 
   return (
-    <div style={{ display: `${foodie?.step === 2 ? "block" : "none"}` }}>
+    <Box sx={{ display: `${foodie?.step === 2 ? "block" : "none"}`, paddingX: { xs: 2, sm: 2, md: 0 } }}>
       <Typography variant="h6" gutterBottom paddingBottom={2}>
         Add Recipe Instructions
       </Typography>
@@ -66,7 +66,7 @@ function InstructionsField({ values }: { values: InstructionItems[] }) {
           )}
         </FieldArray>
       </Grid>
-    </div>
+    </Box>
   );
 }
 

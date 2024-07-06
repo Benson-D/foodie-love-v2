@@ -26,7 +26,7 @@ export default function GeneralInfoField({
   };
 
   return (
-    <Box sx={{ display: componentDisplay }}>
+    <Box sx={{ display: componentDisplay, paddingX: { xs: 2, sm: 2, md: 0 } }}>
       <Typography variant="h6" gutterBottom paddingBottom={2}>
         General Info
       </Typography>
