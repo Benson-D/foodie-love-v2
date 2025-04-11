@@ -24,15 +24,28 @@ import MainModal from '~/components/MainModal';
 import EditRecipeForm from '~/features/recipeForm/EditRecipeForm';
 import { type ISingleRecipe, type IUpdateRecipeData, type InstructionItems } from "~/interface";
 
-const convertTimeToFormattedString = (
-	foodieTime: number | null | undefined,
-): string => {
+
+/**
+ * Return numeric time signature to a formatted string
+ * @param foodieTime 
+ * @returns 
+ */
+const convertTimeToFormattedString = (foodieTime: number | null | undefined): string => {
 	if (!foodieTime) return "0 minutes";
 	const minuteStatement = Number(foodieTime) > 1 ? "minutes" : "minute";
 	
 	return `${foodieTime} ${minuteStatement}`;
 };
 
+/**
+ * Converts a decimal number into a proper fractional string representation.
+ * If the  number is an integer, it returns the integer as a string.
+ * If the number has a fractional part, it returns the number as a mixed fraction
+ * using the simplest form possible (e.g., 1.5 -> "1 1/2")
+
+ * @param num - A decimal number to be converted into a fraction
+ * @returns 
+ */
 function convertToFraction(num: number): string {
 	if (Number.isInteger(num)) return String(Math.round(num));
   
@@ -48,7 +61,12 @@ function convertToFraction(num: number): string {
 	return wholeNumberFraction + `${1 / divisor}/${denominator / divisor}`;
 }
 
-
+/**
+ * Formats recipe data into a shape suitable for initializing an edit form.
+ * 
+ * @param recipeData 
+ * @returns 
+ */
 function formatInitialEditValues(recipeData: ISingleRecipe): IUpdateRecipeData {
 	const formattedIngredients = recipeData.ingredients.map(
 	  ({ amount, ingredient, measurementUnit }) => {
@@ -73,6 +91,10 @@ function formatInitialEditValues(recipeData: ISingleRecipe): IUpdateRecipeData {
 	};
 }
 
+/**
+ * Main Component to render single page recipe
+ * @returns 
+ */
 function SinglePageRecipe() {
 	const router = useRouter();
 	const { id } = router.query;
